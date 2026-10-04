@@ -1,75 +1,27 @@
 {
   "name": "Prescription Safety Checker",
   "agents": {
-    "chart_reader": "634ee0c4-9c2f-5cbf-823f-02428340afea",
-    "formulary_guide": "8c5eed68-daad-5dfd-873b-eaa4558556e9",
-    "rx_queue": "0738cf9d-b2a2-5d9b-a87e-b9c7930b9e21"
+    "chart_reader": "ed529027-20ec-5ec7-b66c-eba410fa9ab0",
+    "formulary_guide": "ff9e1ddf-3900-5697-bb1a-9ff4cc2f3952",
+    "rx_queue": "ac16c35b-f419-51fb-a08b-89fec6b696a9"
   },
   "workflows": {
-    "flow": "dcdbeb88-bfff-5f48-b0ee-23e355bf301f"
+    "flow": "b8ae71c6-c5ec-5f9b-ad11-30c254bb9c8d"
+  },
+  "scenarios": {
+    "desk": "bf9919a7-9fa4-56bc-b2e3-435a26f061d0"
   },
   "ui": {
     "title": "Prescription Safety Checker",
     "tagline": "Checks every new e-prescription before a pharmacist verifies it: allergies, interactions, duplicate therapy and dose limits against the patient's chart and your formulary.",
-    "actions": [
-      {
-        "id": "run",
-        "label": "Run: Prescription safety check",
-        "description": "A new e-prescription arrives. Kaman pulls the patient's allergies, current medicines, weight and kidney function and the formulary's dosing rules in parallel, checks for allergy matches, interactions, duplicate therapy and dose limits, and routes it: clear prescriptions go to the pharmacist's verification queue, issues go to a pharmacist with a timeout escalation, and severe ones are held with the prescriber told. Kaman never changes a prescription.",
-        "kind": "workflow",
-        "target": "flow",
-        "wrap": "payload",
-        "inputs": [
-          {
-            "name": "prescription_id",
-            "label": "Prescription id",
-            "kind": "text",
-            "default": "RX-88120"
-          },
-          {
-            "name": "patient_id",
-            "label": "Patient id",
-            "kind": "text",
-            "default": "PT-1042"
-          },
-          {
-            "name": "prescriber",
-            "label": "Prescriber",
-            "kind": "text",
-            "default": "dr-mehta"
-          },
-          {
-            "name": "items",
-            "label": "Items",
-            "kind": "json",
-            "default": [
-              {
-                "drug": "amoxicillin",
-                "dose_mg": 500,
-                "frequency": "TID",
-                "route": "oral",
-                "days": 7
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "id": "ask",
-        "label": "Ask the Patient Chart Reader",
-        "description": "Pulls the parts of a patient's chart a prescription check needs from the connected FHIR server.",
-        "kind": "agent",
-        "target": "chart_reader",
-        "prompt": "{{question}}",
-        "inputs": [
-          {
-            "name": "question",
-            "label": "Your question",
-            "kind": "text",
-            "default": "Pull the chart for patient PT-1042."
-          }
-        ]
-      }
-    ]
+    "run": "Run: Prescription safety check",
+    "chat": {
+      "agent": "chart_reader",
+      "title": "Ask the Patient Chart Reader",
+      "suggestions": [
+        "a search on AllergyIntolerance returned [{substance: penicillin, reaction: anaphylaxis, recorded: 2019-03-02}]. a search on MedicationRequest (status active) returned [warfarin 5mg daily]. a search on Observation returned {weight: 72 kg (2026-09-12)}; no eGFR found. Report.",
+        "Pull the chart for patient PT-1042."
+      ]
+    }
   }
 }
